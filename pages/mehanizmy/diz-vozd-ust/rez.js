@@ -1,0 +1,46 @@
+import {polTokK, polTokTakt} from "./local_storage.js";
+import {polRez} from "../pol-tag-rez.js";
+import {
+    polAA, polAB, polABA, polABAn, polABAt, polAC, polACA, polACAn, polACAt, polAS2, polAS2A, polAS4, polAS4A, polE1,
+    polE2, polE4, polFI1, polFI2, polFI4, polFIn2, polFIn3, polFIn4, polFIn5, polIzmEn1, polJp, polJpJs1, polJpJs2,
+    polJpJs4, polJpJsVozd, polJpM2, polJpM3, polJpM4, polJpM5, polMIn2, polMIn4, polMomUr, polMp, polMpG2, polMpG3,
+    polMpG4, polMpG5, polMpP3, polMpP5, polP3, polP5, polR01, polR03, polR05, polR12, polR14, polR21, polR23, polR32,
+    polR41, polR45, polR54, polSB, polSC, polUgG2VS2, polUgG3VB, polUgG4VS4, polUgG5VC, polUgP3VB, polUgP5VC, polVA,
+    polVB, polVBA, polVC, polVCA, polVS2, polVS2A, polVS4, polVS4A, polW1, polW2, polW4
+} from "./analiz.js";
+
+
+//Такт работы механизма.
+const TAKT = polTokTakt();
+//Количество положений механизма.
+const KOL = polTokK();
+
+
+//Добавить разметку страницы.
+const content = document.getElementById("content");
+let contentTag = polRez(TAKT, KOL,
+    [[1, polFI1], [2, polFI2], [4, polFI4]],
+    [["B", polSB], ["C", polSC]],
+    [[1, polW1], [2, polW2], [4, polW4]],
+    [["A ", polVA], ["2 A", polVS2A], ["2 ", polVS2], ["B A", polVBA], ["B ", polVB],
+        ["4 A", polVS4A], ["4 ", polVS4], ["C A", polVCA], ["C ", polVC]],
+    [[1, polE1], [2, polE2], [4, polE4]],
+    [["A ", polAA], ["2 A", polAS2A], ["2 ", polAS2], ["B A n", polABAn],
+        ["B A τ", polABAt], ["B A", polABA], ["B ", polAB], ["4 A", polAS4A],
+        ["4 ", polAS4], ["C A n", polACAn], ["C A τ", polACAt], ["C A", polACA], ["C ", polAC]],
+    [[2, polFIn2], [3, polFIn3], [4, polFIn4], [5, polFIn5]],
+    [[2, polMIn2], [4, polMIn4]],
+    [[3, polP3], [5, polP5]],
+    [["05", polR05], ["45", polR45], ["54", polR54], ["14", polR14], ["03", polR03], ["23", polR23],
+        ["32", polR32], ["12", polR12], ["41", polR41], ["21", polR21], ["01", polR01]],
+    [polMomUr],
+    [[2, polJpM2], [3, polJpM3], [4, polJpM4], [5, polJpM5]],
+    [[1, polJpJs1], [2, polJpJs2], [4, polJpJs4], ["возд", polJpJsVozd]],
+    [polJp],
+    [["G 2 2", polUgG2VS2], ["G 3 B", polUgG3VB], ["G 4 4", polUgG4VS4], ["G 5 C", polUgG5VC],  ["P 3 B", polUgP3VB],  ["P 5 C", polUgP5VC]],
+    [[2, polMpG2], [3, polMpG3], [4, polMpG4], [5, polMpG5]],
+    [[3, polMpP3], [5, polMpP5]],
+    [polMp],
+    [polIzmEn1]
+);
+content.innerHTML = contentTag;

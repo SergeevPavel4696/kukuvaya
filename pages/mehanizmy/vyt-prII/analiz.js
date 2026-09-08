@@ -1,0 +1,974 @@
+import {
+    polTokA, polTokAB, polTokAS2, polTokB, polTokBC, polTokCD, polTokM1, polTokM2, polTokM3, polTokM4,
+    polTokM5, polTokJs1, polTokJs2, polTokJs3, polTokJs4, polTokJsDv, polTokDS4, polTokP5Max, polTokOA,
+    polTokTakt, polTokW, polTokWDv, polTokK, polTokToch, polTokCS3, polTokC, polTokDF, polTokFi0
+} from "./local_storage.js";
+import {
+    dif,
+    Pi,
+    polGip,
+    polIzmEnMeh,
+    polIzmEnMeh1,
+    polJpMeh,
+    polJpZv,
+    polKat,
+    polKompSumVek,
+    polMax,
+    polMdvMeh,
+    polMin,
+    polMpF,
+    polMpMeh,
+    polMpMehMass,
+    polPlecho,
+    polUg2Vek,
+    polUgGrad,
+    polVes,
+    polVesVek
+} from "../utils.js";
+import {polUgPo3St} from "../../../scripts/matematika/geom.js";
+
+
+//
+//Кинематический анализ.
+//
+
+//Перемещения звеньев.
+export function polFI1(t) {
+    return polTokFi0() + polTokW() * t;
+}
+
+export function polSAX(t) {
+    return polTokOA() * Math.cos(polFI1(t));
+}
+
+export function polSAY(t) {
+    return polTokOA() * Math.sin(polFI1(t));
+}
+
+function polACdl(t) {
+    return polGip(polTokA() - polSAX(t), polTokB() - polSAY(t));
+}
+
+function polFIAC(t) {
+    return Math.acos((polTokA() - polSAX(t)) / polACdl(t));
+}
+
+function polFIBAC(t) {
+    return polUgPo3St(polTokBC(), polTokAB(), polACdl(t));
+}
+
+export function polFI2(t) {
+    return polFIAC(t) + polFIBAC(t);
+}
+
+export function polSS2X(t) {
+    return polSAX(t) + polTokAS2() * Math.cos(polFI2(t));
+}
+
+export function polSS2Y(t) {
+    return polSAY(t) + polTokAS2() * Math.sin(polFI2(t));
+}
+
+export function polSBX(t) {
+    return polSAX(t) + polTokAB() * Math.cos(polFI2(t));
+}
+
+export function polSBY(t) {
+    return polSAY(t) + polTokAB() * Math.sin(polFI2(t));
+}
+
+export function polFI3(t) {
+    return Math.asin((polTokB() - polSBY(t)) / polTokBC()) + Pi;
+}
+
+export function polSS3X(t) {
+    return polTokA() + polTokCS3() * Math.cos(polFI3(t));
+}
+
+export function polSS3Y(t) {
+    return polTokB() + polTokCS3() * Math.sin(polFI3(t));
+}
+
+export function polSDX(t) {
+    return polTokA() + polTokCD() * Math.cos(polFI3(t));
+}
+
+export function polSDY(t) {
+    return polTokB() + polTokCD() * Math.sin(polFI3(t));
+}
+
+export function polFI4(t) {
+    return Math.acos((polSDX(t) - polTokA() + polTokC()) / polTokDF()) + Pi;
+}
+
+export function polSS4X(t) {
+    return polSDX(t) + polTokDS4() * Math.cos(polFI4(t));
+}
+
+export function polSS4Y(t) {
+    return polSDY(t) + polTokDS4() * Math.sin(polFI4(t));
+}
+
+export function polSFX(t) {
+    return polTokA() - polTokC();
+}
+
+export function polSFY(t) {
+    return polSDY(t) + polTokDF() * Math.sin(polFI4(t));
+}
+
+//Крайние положения механизма.
+function polFiCD(verh) {
+    const OC = polGip(polTokA(), polTokB());
+    const OB = verh ? polTokAB() + polTokOA() : polTokAB() - polTokOA();
+    const fiBCA = polUgPo3St(OB, polTokBC(), OC);
+    const fiOC = Math.atan(polTokB() / polTokA());
+    return Pi - (fiBCA - fiOC);
+}
+
+export function polLevKr() {
+    const leDni = polTokA() + polTokCD() * Math.cos(polFiCD());
+    const leDve = polTokA() + polTokCD() * Math.cos(polFiCD(true));
+    if (polFiCD() < Pi) return (leDni - 10 <= polTokA() - polTokC() ? leDni : (polTokA() - polTokC()));
+    else if (polFiCD(true) > Pi) return (leDve - 10 <= polTokA() - polTokC() ? leDve : (polTokA() - polTokC()));
+    else return (polTokCD() - 10 > polTokC() ? (polTokA() - polTokCD()) : (polTokA() - polTokC() - 10));
+}
+
+export function polVerhKr() {
+    return polMax([polTokB(), polTokB() + polTokCD() * Math.sin(polFiCD(true))]);
+}
+
+export function polPravKr() {
+    return polTokA();
+}
+
+export function polNizhKr() {
+    return polMin([-polTokOA(), polKr5() - 83]);
+}
+
+export function polKr5(verh) {
+    return polTokB() + polTokCD() * Math.sin(polFiCD(verh)) - polKat(polTokDF(), polTokC() + polTokCD() * Math.cos(polFiCD(verh)));
+}
+
+export function polDiap5() {
+    return polKr5(true) - polKr5();
+}
+
+export function polSBXKr(verh) {
+    return polTokA() + polTokBC() * Math.cos(polFiCD(verh));
+}
+
+export function polSBYKr(verh) {
+    return polTokB() + polTokBC() * Math.sin(polFiCD(verh));
+}
+
+export function polSS3XKr(verh) {
+    const xb = polSBXKr(verh), xc = polTokA(), bc = polTokBC(), cs3 = polTokCS3(), bs3 = bc - cs3;
+    return (xb * cs3 + xc * bs3) / bc;
+}
+
+export function polSS3YKr(verh) {
+    const yb = polSBYKr(verh), yc = polTokB(), bc = polTokBC(), cs3 = polTokCS3(), bs3 = bc - cs3;
+    return (yb * cs3 + yc * bs3) / bc;
+}
+
+export function polSDXKr(verh) {
+    return polTokA() + polTokCD() * Math.cos(polFiCD(verh));
+}
+
+export function polSDYKr(verh) {
+    return polTokB() + polTokCD() * Math.sin(polFiCD(verh));
+}
+
+//Скорости звеньев.
+export function polW1(t) {
+    return polTokW();
+}
+
+export function polW2(t) {
+    return dif(polFI2, t, polTokTakt());
+}
+
+export function polW3(t) {
+    return dif(polFI3, t, polTokTakt());
+}
+
+export function polW4(t) {
+    return dif(polFI4, t, polTokTakt());
+}
+
+export function polWDv(t) {
+    return polTokWDv();
+}
+
+export function polVAX(t) {
+    return dif(polSAX, t, polTokTakt()) / 1000;
+}
+
+export function polVAY(t) {
+    return dif(polSAY, t, polTokTakt()) / 1000;
+}
+
+export function polVA(t) {
+    return polGip(polVAX(t), polVAY(t));
+}
+
+export function polVS2A(t) {
+    return Math.abs(polW2(t) * polTokAS2() / 1000);
+}
+
+export function polVS2X(t) {
+    return dif(polSS2X, t, polTokTakt()) / 1000;
+}
+
+export function polVS2Y(t) {
+    return dif(polSS2Y, t, polTokTakt()) / 1000;
+}
+
+export function polVS2(t) {
+    return polGip(polVS2X(t), polVS2Y(t));
+}
+
+export function polVBA(t) {
+    return Math.abs(polW2(t) * polTokAB() / 1000);
+}
+
+export function polVBX(t) {
+    return dif(polSBX, t, polTokTakt()) / 1000;
+}
+
+export function polVBY(t) {
+    return dif(polSBY, t, polTokTakt()) / 1000;
+}
+
+export function polVB(t) {
+    return polGip(polVBX(t), polVBY(t));
+}
+
+export function polVS3X(t) {
+    return dif(polSS3X, t, polTokTakt()) / 1000;
+}
+
+export function polVS3Y(t) {
+    return dif(polSS3Y, t, polTokTakt()) / 1000;
+}
+
+export function polVS3(t) {
+    return polGip(polVS3X(t), polVS3Y(t));
+}
+
+export function polVDX(t) {
+    return dif(polSDX, t, polTokTakt()) / 1000;
+}
+
+export function polVDY(t) {
+    return dif(polSDY, t, polTokTakt()) / 1000;
+}
+
+export function polVD(t) {
+    return polGip(polVDX(t), polVDY(t));
+}
+
+export function polVS4D(t) {
+    return Math.abs(polW4(t) * polTokDS4()) / 1000;
+}
+
+export function polVS4X(t) {
+    return dif(polSS4X, t, polTokTakt()) / 1000;
+}
+
+export function polVS4Y(t) {
+    return dif(polSS4Y, t, polTokTakt()) / 1000;
+}
+
+export function polVS4(t) {
+    return polGip(polVS4X(t), polVS4Y(t));
+}
+
+export function polVFD(t) {
+    return Math.abs(polW4(t) * polTokDF()) / 1000;
+}
+
+export function polVFX(t) {
+    return 0;
+}
+
+export function polVFY(t) {
+    return dif(polSFY, t, polTokTakt()) / 1000;
+}
+
+export function polVF(t) {
+    return Math.abs(polVFY(t));
+}
+
+//Ускорения звеньев.
+export function polE1(t) {
+    return 0;
+}
+
+export function polE2(t) {
+    return dif(polW2, t, polTokTakt());
+}
+
+export function polE3(t) {
+    return dif(polW3, t, polTokTakt());
+}
+
+export function polE4(t) {
+    return dif(polW4, t, polTokTakt());
+}
+
+export function polAAX(t) {
+    return dif(polVAX, t, polTokTakt());
+}
+
+export function polAAY(t) {
+    return dif(polVAY, t, polTokTakt());
+}
+
+export function polAA(t) {
+    return polGip(polAAX(t), polAAY(t));
+}
+
+export function polAS2X(t) {
+    return dif(polVS2X, t, polTokTakt());
+}
+
+export function polAS2Y(t) {
+    return dif(polVS2Y, t, polTokTakt());
+}
+
+export function polAS2(t) {
+    return polGip(polAS2X(t), polAS2Y(t));
+}
+
+export function polABAn(t) {
+    return Math.pow(polW2(t), 2) * polTokAB() / 1000;
+}
+
+export function polABAt(t) {
+    return Math.abs(polE2(t) * polTokAB() / 1000);
+}
+
+export function polABA(t) {
+    return polGip(polABAn(t), polABAt(t));
+}
+
+export function polAS3X(t) {
+    return dif(polVS3X, t, polTokTakt());
+}
+
+export function polAS3Y(t) {
+    return dif(polVS3Y, t, polTokTakt());
+}
+
+export function polAS3(t) {
+    return polGip(polAS3X(t), polAS3Y(t));
+}
+
+export function polABCn(t) {
+    return Math.pow(polW3(t), 2) * polTokBC() / 1000;
+}
+
+export function polABCt(t) {
+    return Math.abs(polE3(t) * polTokBC() / 1000);
+}
+
+export function polABX(t) {
+    return dif(polVBX, t, polTokTakt());
+}
+
+export function polABY(t) {
+    return dif(polVBY, t, polTokTakt());
+}
+
+export function polAB(t) {
+    return polGip(polABX(t), polABY(t));
+}
+
+export function polADX(t) {
+    return dif(polVDX, t, polTokTakt());
+}
+
+export function polADY(t) {
+    return dif(polVDY, t, polTokTakt());
+}
+
+export function polAD(t) {
+    return polGip(polADX(t), polADY(t));
+}
+
+export function polAS4Dn(t) {
+    return Math.pow(polW4(t), 2) * polTokDS4() / 1000;
+}
+
+export function polAS4Dt(t) {
+    return Math.abs(polE4(t) * polTokDS4() / 1000);
+}
+
+export function polAS4D(t) {
+    return polGip(polAS4Dn(t), polAS4Dt(t));
+}
+
+export function polAS4X(t) {
+    return dif(polVS4X, t, polTokTakt());
+}
+
+export function polAS4Y(t) {
+    return dif(polVS4Y, t, polTokTakt());
+}
+
+export function polAS4(t) {
+    return polGip(polAS4X(t), polAS4Y(t));
+}
+
+export function polAFDn(t) {
+    return Math.pow(polW4(t), 2) * polTokDF() / 1000;
+}
+
+export function polAFDt(t) {
+    return Math.abs(polE4(t) * polTokDF() / 1000);
+}
+
+export function polAFD(t) {
+    return polGip(polAFDn(t), polAFDt(t));
+}
+
+export function polAFX(t) {
+    return 0;
+}
+
+export function polAFY(t) {
+    return dif(polVFY, t, polTokTakt());
+}
+
+export function polAF(t) {
+    return Math.abs(polAFY(t));
+}
+
+
+//
+//Силовой анализ.
+//
+
+//Веса звеньев.
+export function polG1(vek) {
+    return vek ? polVesVek(polTokM1()) : polVes(polTokM1());
+}
+
+export function polG2(vek) {
+    return vek ? polVesVek(polTokM2()) : polVes(polTokM2());
+}
+
+export function polG3(vek) {
+    return vek ? polVesVek(polTokM3()) : polVes(polTokM3());
+}
+
+export function polG4(vek) {
+    return vek ? polVesVek(polTokM4()) : polVes(polTokM4());
+}
+
+export function polG5(vek) {
+    return vek ? polVesVek(polTokM5()) : polVes(polTokM5());
+}
+
+//Силы инерции.
+export function polFIn2X(t) {
+    return -polTokM2() * polAS2X(t);
+}
+
+export function polFIn2Y(t) {
+    return -polTokM2() * polAS2Y(t);
+}
+
+export function polFIn2(t) {
+    return polTokM2() * polAS2(t);
+}
+
+export function polFIn3X(t) {
+    return -polTokM3() * polAS3X(t);
+}
+
+export function polFIn3Y(t) {
+    return -polTokM3() * polAS3Y(t);
+}
+
+export function polFIn3(t) {
+    return polTokM3() * polAS3(t);
+}
+
+export function polFIn4X(t) {
+    return -polTokM4() * polAS4X(t);
+}
+
+export function polFIn4Y(t) {
+    return -polTokM4() * polAS4Y(t);
+}
+
+export function polFIn4(t) {
+    return polTokM4() * polAS4(t);
+}
+
+export function polFIn5X(t) {
+    return 0;
+}
+
+export function polFIn5Y(t) {
+    return -polTokM5() * polAFY(t);
+}
+
+export function polFIn5(t) {
+    return polTokM5() * polAF(t);
+}
+
+//Моменты сил инерции.
+export function polMIn2(t) {
+    return -polTokJs2() * polE2(t);
+}
+
+export function polMIn3(t) {
+    return -polTokJs3() * polE3(t);
+}
+
+export function polMIn4(t) {
+    return -polTokJs4() * polE4(t);
+}
+
+//Сила полезного сопротивления.
+export function polP5(t) {
+    const S = polSFY(t);
+    const P = polTokP5Max();
+    const ni = polKr5();
+    const diap = polDiap5();
+    const v = polVFY(t);
+    if (v <= 0) {
+        if (S < ni + 0.1 * diap) return P * (0.9 * (S - ni)) / (0.1 * diap);
+        else if (S < ni + 0.3 * diap) return P * (0.9 + 0.1 * (S - ni - 0.1 * diap) / (0.2 * diap));
+        else if (S < ni + 0.4 * diap) return P * (1 - (S - ni - 0.3 * diap) / (0.1 * diap));
+        else return 0;
+    } else return 0;
+}
+
+//Вторая группа Ассура.
+export function polMomR05(t) {
+    return polR05(t) * (polSDY(t) - polSFY(t)) / 1000;
+}
+
+export function polMomP5(t) {
+    return -polP5(t) * (polSDX(t) - polSFX(t)) / 1000;
+}
+
+export function polMomFIn5(t) {
+    return -polFIn5Y(t) * (polSDX(t) - polSFX(t)) / 1000;
+}
+
+export function polMomG5(t) {
+    return -polG5(true) * (polSDX(t) - polSFX(t)) / 1000;
+}
+
+export function polMomFIn4(t) {
+    return (polFIn4X(t) * (polSDY(t) - polSS4Y(t)) - polFIn4Y(t) * (polSDX(t) - polSS4X(t))) / 1000;
+}
+
+export function polMomG4(t) {
+    return -polG4(true) * (polSDX(t) - polSS4X(t)) / 1000;
+}
+
+export function polPlA(t) {
+    return (polSDY(t) - polSFY(t)) / 1000;
+}
+
+export function polPlB(t) {
+    return Math.abs(polSDX(t) - polSFX(t)) / 1000;
+}
+
+export function polPlC(t) {
+    return polPlecho(polFIn4X(t), polFIn4Y(t), polSDX(t) - polSS4X(t), polSDY(t) - polSS4Y(t)) / 1000;
+}
+
+export function polPlD(t) {
+    return Math.abs(polSDX(t) - polSS4X(t)) / 1000;
+}
+
+export function polR05(t) {
+    return -(polMomP5(t) + polMomFIn5(t) + polMomG5(t) + polMomFIn4(t) +
+        polMomG4(t) + polMIn4(t)) / ((polSDY(t) - polSFY(t)) / 1000);
+}
+
+export function polR45X(t) {
+    return -polR05(t);
+}
+
+export function polR45Y(t) {
+    return -polP5(t) - polFIn5Y(t) - polG5(true);
+}
+
+export function polR45(t) {
+    return polGip(polR45X(t), polR45Y(t));
+}
+
+export function polR54X(t) {
+    return -polR45X(t);
+}
+
+export function polR54Y(t) {
+    return -polR45Y(t);
+}
+
+export function polR54(t) {
+    return polGip(polR54X(t), polR54Y(t));
+}
+
+export function polR34X(t) {
+    return -polR54X(t) - polFIn4X(t);
+}
+
+export function polR34Y(t) {
+    return -polR54Y(t) - polFIn4Y(t) - polG4(true);
+}
+
+export function polR34(t) {
+    return polGip(polR34X(t), polR34Y(t));
+}
+
+//Первая группа Ассура.
+export function polMomR43(t) {
+    return (polR43X(t) * (polSBY(t) - polSDY(t)) - polR43Y(t) * (polSBX(t) - polSDX(t))) / 1000;
+}
+
+export function polMomR03t(t) {
+    return -polR03T(t) * polTokBC() / 1000;
+}
+
+export function polMomFIn3(t) {
+    return (polFIn3X(t) * (polSBY(t) - polSS3Y(t)) - polFIn3Y(t) * (polSBX(t) - polSS3X(t))) / 1000;
+}
+
+export function polMomG3(t) {
+    return -polG3(true) * (polSBX(t) - polSS3X(t)) / 1000;
+}
+
+export function polMomR12t(t) {
+    return -polR12T(t) * polTokAB() / 1000;
+}
+
+export function polMomFIn2(t) {
+    return (polFIn2X(t) * (polSBY(t) - polSS2Y(t)) - polFIn2Y(t) * (polSBX(t) - polSS2X(t))) / 1000;
+}
+
+export function polMomG2(t) {
+    return -polG2(true) * (polSBX(t) - polSS2X(t)) / 1000;
+}
+
+export function polPlE() {
+    return polTokBC() / 1000;
+}
+
+export function polPlF(t) {
+    return polPlecho(polR43X(t), polR43Y(t), polSBX(t) - polSDX(t), polSBY(t) - polSDY(t)) / 1000;
+}
+
+export function polPlG(t) {
+    return polPlecho(polFIn3X(t), polFIn3Y(t), polSBX(t) - polSS3X(t), polSBY(t) - polSS3Y(t)) / 1000;
+}
+
+export function polPlH(t) {
+    return Math.abs(polSS3X(t) - polSBX(t)) / 1000;
+}
+
+export function polPlI() {
+    return polTokAB() / 1000;
+}
+
+export function polPlJ(t) {
+    return polPlecho(polFIn2X(t), polFIn2Y(t), polSBX(t) - polSS2X(t), polSBY(t) - polSS2Y(t)) / 1000;
+}
+
+export function polPlK(t) {
+    return Math.abs(polSS2X(t) - polSBX(t)) / 1000;
+}
+
+export function polR43X(t) {
+    return -polR34X(t);
+}
+
+export function polR43Y(t) {
+    return -polR34Y(t);
+}
+
+export function polR43(t) {
+    return polGip(polR43X(t), polR43Y(t));
+}
+
+export function polR03T(t) {
+    return (polMomR43(t) + polMomFIn3(t) + polMomG3(t) + polMIn3(t)) / (polTokBC() / 1000);
+}
+
+export function polR03TX(t) {
+    return polR03T(t) * Math.cos(polFI3(t) + 0.5 * Pi);
+}
+
+export function polR03TY(t) {
+    return polR03T(t) * Math.sin(polFI3(t) + 0.5 * Pi);
+}
+
+export function polR03N(t) {
+    return polKompSumVek(
+        polR12TX(t) + polFIn2X(t) + polR43X(t) + polFIn3X(t) + polR03TX(t),
+        polR12TY(t) + polFIn2Y(t) + polG2(true) + polR43Y(t) + polFIn3Y(t) + polG3(true) + polR03TY(t),
+        polFI3(t), polFI2(t)).L1;
+}
+
+export function polR03NX(t) {
+    return polR03N(t) * Math.cos(polFI3(t));
+}
+
+export function polR03NY(t) {
+    return polR03N(t) * Math.sin(polFI3(t));
+}
+
+export function polR03X(t) {
+    return polR03TX(t) + polR03NX(t);
+}
+
+export function polR03Y(t) {
+    return polR03TY(t) + polR03NY(t);
+}
+
+export function polR03(t) {
+    return polGip(polR03X(t), polR03Y(t));
+}
+
+export function polR12T(t) {
+    return (polMomFIn2(t) + polMomG2(t) + polMIn2(t)) / (polTokAB() / 1000);
+}
+
+export function polR12TX(t) {
+    return polR12T(t) * Math.cos(polFI2(t) + 0.5 * Pi);
+}
+
+export function polR12TY(t) {
+    return polR12T(t) * Math.sin(polFI2(t) + 0.5 * Pi);
+}
+
+export function polR12N(t) {
+    return polKompSumVek(
+        polR12TX(t) + polFIn2X(t) + polR43X(t) + polFIn3X(t) + polR03TX(t),
+        polR12TY(t) + polFIn2Y(t) + polG2(true) + polR43Y(t) + polFIn3Y(t) + polG3(true) + polR03TY(t),
+        polFI3(t), polFI2(t)).L2;
+}
+
+export function polR12NX(t) {
+    return polR12N(t) * Math.cos(polFI2(t));
+}
+
+export function polR12NY(t) {
+    return polR12N(t) * Math.sin(polFI2(t));
+}
+
+export function polR12X(t) {
+    return polR12TX(t) + polR12NX(t);
+}
+
+export function polR12Y(t) {
+    return polR12TY(t) + polR12NY(t);
+}
+
+export function polR12(t) {
+    return polGip(polR12X(t), polR12Y(t));
+}
+
+export function polR32X(t) {
+    return -(polR12X(t) + polFIn2X(t));
+}
+
+export function polR32Y(t) {
+    return -(polR12Y(t) + polFIn2Y(t) + polG2(true));
+}
+
+export function polR32(t) {
+    return polGip(polR32X(t), polR32Y(t));
+}
+
+export function polR23X(t) {
+    return -polR32X(t);
+}
+
+export function polR23Y(t) {
+    return -polR32Y(t);
+}
+
+export function polR23(t) {
+    return polGip(polR23X(t), polR23Y(t));
+}
+
+//Начальный механизм.
+export function polMomR21(t) {
+    return (-polR21X(t) * polSAY(t) + polR21Y(t) * polSAX(t)) / 1000;
+}
+
+export function polPlL(t) {
+    return polPlecho(polR21X(t), polR21Y(t), -polSAX(t), -polSAY(t)) / 1000;
+}
+
+export function polR21X(t) {
+    return -polR12X(t);
+}
+
+export function polR21Y(t) {
+    return -polR12Y(t);
+}
+
+export function polR21(t) {
+    return polGip(polR21X(t), polR21Y(t));
+}
+
+export function polR01X(t) {
+    return -polR21X(t);
+}
+
+export function polR01Y(t) {
+    return -(polR21Y(t) + polG1(true));
+}
+
+export function polR01(t) {
+    return polGip(polR01X(t), polR01Y(t));
+}
+
+export function polMomUr(t) {
+    return (polR21X(t) * polSAY(t) - polR21Y(t) * polSAX(t)) / 1000;
+}
+
+
+//
+//Динамический анализ.
+//
+
+//Приведенные моменты инерции.
+export function polJpM2(t) {
+    return polJpZv(polTokM2(), polVS2(t), polW1(t));
+}
+
+export function polJpM3(t) {
+    return polJpZv(polTokM3(), polVS3(t), polW1(t));
+}
+
+export function polJpM4(t) {
+    return polJpZv(polTokM4(), polVS4(t), polW1(t));
+}
+
+export function polJpM5(t) {
+    return polJpZv(polTokM5(), polVF(t), polW1(t));
+}
+
+export function polJpJs1(t) {
+    return polTokJs1();
+}
+
+export function polJpJs2(t) {
+    return polJpZv(polTokJs2(), polW2(t), polW1(t));
+}
+
+export function polJpJs3(t) {
+    return polJpZv(polTokJs3(), polW3(t), polW1(t));
+}
+
+export function polJpJs4(t) {
+    return polJpZv(polTokJs4(), polW4(t), polW1(t));
+}
+
+export function polJpJsDv(t) {
+    return polJpZv(polTokJsDv(), polWDv(t), polW1(t));
+}
+
+export function polJp(t) {
+    return polJpMeh([
+        [polTokM2(), polVS2(t)], [polTokM3(), polVS3(t)], [polTokM4(), polVS4(t)], [polTokM5(), polVF(t)], [polTokJs1(), polW1(t)],
+        [polTokJs2(), polW2(t)], [polTokJs3(), polW3(t)], [polTokJs4(), polW4(t)], [polTokJsDv(), polWDv(t)]
+    ], polW1(t));
+}
+
+//Углы между силами и скоростями точек приложения сил.
+export function polUgG2VS2(t) {
+    return polUgGrad(polUg2Vek(0, polG2(true), polVS2X(t), polVS2Y(t)));
+}
+
+export function polUgG3VS3(t) {
+    return polUgGrad(polUg2Vek(0, polG3(true), polVS3X(t), polVS3Y(t)));
+}
+
+export function polUgG4VS4(t) {
+    return polUgGrad(polUg2Vek(0, polG4(true), polVS4X(t), polVS4Y(t)));
+}
+
+export function polUgG5VF(t) {
+    return (polVFY(t) <= 0 ? 0 : 180);
+}
+
+export function polUgP5VF(t) {
+    return (polP5(t) === 0 ? 0 : 180);
+}
+
+//Приведенные моменты сил.
+export function polMpG2(t) {
+    return polMpF(polG2(true), polVS2Y(t), Math.abs(polW1(t)));
+}
+
+export function polMpG3(t) {
+    return polMpF(polG3(true), polVS3Y(t), Math.abs(polW1(t)));
+}
+
+export function polMpG4(t) {
+    return polMpF(polG4(true), polVS4Y(t), Math.abs(polW1(t)));
+}
+
+export function polMpG5(t) {
+    return polMpF(polG5(true), polVFY(t), Math.abs(polW1(t)));
+}
+
+export function polMpP5(t) {
+    return polMpF(polP5(t), polVFY(t), Math.abs(polW1(t)));
+}
+
+export function polMp(t) {
+    return polMpMeh([[polG2(true), polVS2Y(t)], [polG3(true), polVS3Y(t)], [polG4(true), polVS4Y(t)],
+        [polG5(true), polVFY(t)], [polP5(t), polVFY(t)]], Math.abs(polW1(t)));
+}
+
+//Массив приведенных моментов сил.
+export function polMpMass() {
+    const kol = polTokK();
+    const takt = polTokTakt();
+    return polMpMehMass(kol, takt, polMp);
+}
+
+//Движущий момент.
+export function polMdv() {
+    return polMdvMeh(polTokToch(), polMp, polTokTakt());
+}
+
+//Изменение кинетической энергии.
+export function polIzmEn(t) {
+    return polIzmEnMeh(polMp, polMdv, t, polTokToch(), polTokW());
+}
+
+//Массив изменений кинетической энергии.
+export function polIzmEn1(t) {
+    return polIzmEnMeh1(polTokK(), polTokTakt(), polMp, polMdv, polTokToch(), polTokW(), t);
+}
+
+
+
+//Получить угол наклона касательной к диаграмме Виттенбауэра.
+export function polUgPsi(muJp, muDe, ner, min) {
+    if (min) {
+        return polUgGrad(Math.atan(0.5 * Math.pow(polTokW() * (1 - ner / 2), 2) * muJp / muDe));
+    } else {
+        return polUgGrad(Math.atan(0.5 * Math.pow(polTokW() * (1 + ner / 2), 2) * muJp / muDe));
+    }
+}
+
+//Получить длину отрезка, отсекаемого на оси ординат касательными к диаграмме энергомасс Виттенбауэра.
+export function polTd() {
+    return 0;
+}

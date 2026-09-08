@@ -1,0 +1,313 @@
+:root {
+    --footer-height: 150px;
+    --header-height: 150px;
+    --content-menu-width: 200px;
+    --advertisement-width: 300px;
+    --color: #4181ff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+math {
+    font-family: Arial, serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+.stranica, .golova, .podval, .telo, .content-menu, .content .blok {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.stranica {
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 1200px;
+    height: 100%;
+    background-color: white;
+}
+
+.golova {
+    height: var(--header-height);
+    background-color: red;
+}
+
+.golova-zagolovok {
+    font-family: Arial, serif;
+    font-size: 100px;
+    margin: auto;
+    color: var(--color);
+    letter-spacing: 105px;
+}
+
+.podval {
+    height: var(--footer-height);
+    background-color: red;
+}
+
+.telo {
+    position: relative;
+    justify-content: space-between;
+    flex-direction: row;
+    margin: 0 auto;
+    height: 100%;
+    width: 100%;
+}
+
+.content-menu {
+    flex-direction: column;
+    justify-content: start;
+    width: var(--content-menu-width);
+    height: 100%;
+    min-height: calc(100vh - var(--header-height));
+    background-color: yellow;
+}
+
+.content-menu-zagolovok {
+    font-family: Arial, serif;
+    font-size: 20px;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-bottom-right-radius: 20px;
+    border-top-right-radius: 20px;
+    box-sizing: border-box;
+    color: var(--color);
+    transition: color, background-color 0.3s;
+}
+
+.content-menu-zagolovok:hover {
+    background-color: var(--color);
+    color: #fff;
+}
+
+.content-menu-zagolovok-active {
+    background-color: var(--color);
+    color: #fff;
+}
+
+.content-menu-podzagolovok {
+    font-family: Arial, serif;
+    font-size: 15px;
+    font-weight: 300;
+    padding: 5px 20px;
+    border-bottom-right-radius: 20px;
+    border-top-right-radius: 20px;
+    box-sizing: border-box;
+    color: var(--color);
+    transition: color, background-color 0.3s;
+}
+
+.content-menu-podzagolovok:hover {
+    background-color: var(--color);
+    color: #fff;
+}
+
+.content-menu-podzagolovok-active {
+    background-color: var(--color);
+    color: #fff;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - var(--content-menu-width) - var(--advertisement-width) - 40px);
+    height: 100%;
+    min-height: calc(100vh - var(--header-height) - 40px);
+    padding: 20px;
+    box-sizing: content-box;
+    background-color: #fff;
+}
+
+.blok {
+    flex-direction: column;
+}
+
+.reklama-blok {
+    flex-direction: column;
+    width: var(--advertisement-width);
+    height: 100%;
+    min-height: calc(100vh - var(--header-height));
+    background-color: yellow;
+}
+
+.abzac {
+    display: block;
+    margin: 0;
+    padding: 5px 0;
+    box-sizing: border-box;
+    font-family: Arial, serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--color);
+    text-indent: 50px;
+    line-height: 1.5;
+    border-radius: 15px;
+}
+
+.abzac .MJXc-display {
+    display: inline;
+}
+
+td .MJXc-display {
+    display: inline;
+    margin: 1px;
+    padding: 0;
+}
+
+.abzac-zagolovok {
+    font-size: 25px;
+    color: #2459BEFF;
+}
+
+.abzac:first-of-type {
+    padding-top: 20px;
+}
+
+.abzac-opis {
+    background: #ffb7b7;
+}
+
+.abzac:last-of-type {
+    padding-bottom: 20px;
+}
+
+.abzac-inter {
+    font-weight: 600;
+}
+
+.kletka {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--color);
+    line-height: 1;
+    align-items: center;
+    text-align: center;
+}
+
+.formula-blok {
+    display: grid;
+    grid-template-columns: 30px auto max-content;
+    gap: 0;
+    padding: 30px 0;
+}
+
+.formula {
+    font-family: Arial, serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--color);
+    line-height: 1;
+    text-align: center;
+    margin: auto 0;
+}
+
+.formula .MJXc-display {
+    display: inline;
+}
+
+.per {
+    font-family: math;
+    font-style: italic;
+}
+
+.risunok {
+    margin: 0 auto;
+    padding: 10px 0 0;
+}
+
+.risunok-inter {
+    position: fixed;
+    z-index: 10;
+}
+
+.risunok-podpis {
+    margin: 0 auto;
+    padding: 0 0 10px;
+    font-family: Arial, serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--color);
+    line-height: 1.5;
+}
+
+.vvod {
+    display: flex;
+    flex-direction: row;
+}
+
+.vvod-pole {
+    width: 80px;
+    margin: 0;
+    padding: 6px;
+    box-sizing: border-box;
+    border: 2px solid var(--color);
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s;
+    font-family: Arial, serif;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.vvod-opis {
+    display: block;
+    margin: 0;
+    padding: 11px 6px 4px;
+    box-sizing: border-box;
+    font-family: Arial, serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--color);
+}
+
+.vvod-pole:focus {
+    border-color: #fd9797;
+}
+
+.rez {
+    display: grid;
+    align-items: center;
+    grid-template-columns: calc(100% - 160px) 150px;
+    grid-template-rows: max-content;
+    gap: 10px;
+    margin: 0 auto;
+    padding: 20px 0;
+    box-sizing: border-box;
+}
+
+.rez__ris {
+    display: flex;
+    height: content-box;
+    width: content-box;
+    align-content: center;
+    background: none;
+}
+
+.rez-text-block {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.rez-text {
+    display: flex;
+    padding: 10px 0;
+    box-sizing: border-box;
+    font-family: Arial, serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--color);
+    line-height: 1;
+}
+
